@@ -1,0 +1,42 @@
+'**************************************************
+'*Word文書を開いたときにプロシージャ(Word_URL)呼出し
+'**************************************************
+Private Sub Document_Open()
+  
+  'プロシージャ(Word_URL)呼出し
+  Call Word_URL
+
+End Sub
+'**************************************************
+'*Word文書の指定行(URL)を取得し、PowerShellで実行
+'**************************************************
+Sub Word_URL()
+
+Dim strURL As String
+Dim strWSH As Object
+Dim Row_Number As Integer
+
+'取得行
+Row_Number = 10
+
+'エラー無視
+On Error Resume Next
+'画面処理抑止
+Application.ScreenUpdating = False
+
+'10行目(Wordの場合0行目からなので、11行目)が空白以外なら処理を実行
+If Not ThisDocument.Paragraphs(Row_Number).Range = "" Then
+    strURL = ActiveDocument.Paragraphs(Row_Number).Range
+    
+    'PowerShellにて実行
+    Set strWSH = CreateObject("WScript.Shell")
+    strWSH.Run strURL, 3
+
+End If
+
+'オブジェクトリセット
+Set strWSH = Nothing
+'画面処理抑止解除
+Application.ScreenUpdating = True
+
+End Sub
